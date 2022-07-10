@@ -1,0 +1,13 @@
+plugins {
+    id ("net.minecraftforge.gradle")
+    id ("org.parchmentmc.librarian.forgegradle")
+}
+
+project.dependencies.minecraft "net.minecraft:joined:${project.minecraftVersion}"
+
+project.minecraft.mappings channel: "parchment", version: "${project.parchmentMinecraftVersion}-${project.parchmentVersion}-${project.minecraftVersion}"
+
+//Subsequent code is needed to fix FG
+if (!project.file("build\\fg_cache\\net\\minecraft\\joined\\${project.minecraftVersion}").exists()) {
+    project.file("build\\fg_cache\\net\\minecraft\\joined\\${project.minecraftVersion}").mkdirs()
+}

@@ -2,6 +2,11 @@
 ### Scena git ignore file.
 #########################
 
+# Project specific
+#########################
+/repo/
+
+
 # Default java
 #########################
 
