@@ -12,13 +12,13 @@
     "sources": "https://github.com/Communi-Suggestu/Saecularia-Caudices"
   },
 
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "icon": "logo.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.communi.suggesta.saecularia.caudices.fabric.Fabric"
+      "com.communi.suggestu.saecularia.caudices.fabric.Fabric"
     ]
   },
   "mixins": [

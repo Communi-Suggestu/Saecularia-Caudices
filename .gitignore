@@ -206,3 +206,5 @@ local.properties
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+**/runs/**

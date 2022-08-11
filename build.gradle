@@ -1,5 +1,5 @@
-project.group = "com.communi-coresuggestu.saecularia-caudices"
-project.version = project.localVersion
+project.group = "com.communi-suggestu.saecularia-caudices"
+project.version = (System.getenv().containsKey("Version") ? System.getenv("Version") : project.localVersion)
 
 subprojects { subProject ->
     subProject.apply { configure ->
@@ -18,23 +18,33 @@ subprojects { subProject ->
 
     subProject.group = rootProject.group
     subProject.version = rootProject.version
+    subProject.archivesBaseName = "${rootProject.name}-${subProject.name}"
 
     subProject.java.toolchain.languageVersion.set(JavaLanguageVersion.of(project.javaVersion))
 
     subProject.tasks.jar.baseName = "${rootProject.name}-${subProject.name}"
     subProject.tasks.jar.manifest.attributes([
-                    'Maven-Artifact'          : "${project.group}:${project.archivesBaseName}:${project.version}",
-                    "Specification-Title"     : project.name,
-                    "Specification-Vendor"    : project.owner,
-                    "Specification-Version"   : project.version,
-                    "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : project.version,
-                    "Implementation-Vendor"   : project.owner,
+                    'Maven-Artifact'          : "${rootProject.group}:${rootProject.name}-${project.archivesBaseName}:${rootProject.version}",
+                    "Specification-Title"     : rootProject.name,
+                    "Specification-Vendor"    : rootProject.owner,
+                    "Specification-Version"   : rootProject.version,
+                    "Implementation-Title"    : rootProject.name,
+                    "Implementation-Version"  : rootProject.version,
+                    "Implementation-Vendor"   : rootProject.owner,
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "Automatic-Module-Name"   : project.name,
-                    "MixinConfigs": "${project.name}.mixins.json"
+                    "Automatic-Module-Name"   : rootProject.name.toLowerCase().replace("-", "_"),
+                    "FMLModType": "GAMELIBRARY"
             ])
     subProject.tasks.jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    if (System.getenv().containsKey("LDTTeamJfrogUsername") && System.getenv().containsKey("LDTTeamJfrogPassword")) {
+        subProject.publishing.repositories.maven {
+            name 'LDTTeamJfrog'
+            credentials.username System.getenv().get("LDTTeamJfrogUsername")
+            credentials.password System.getenv().get("LDTTeamJfrogPassword")
+            url 'https://ldtteam.jfrog.io/ldtteam/mods-maven'
+        }
+    }
 
     subProject.publishing.repositories.maven {
         name 'InternalDirectory'
@@ -49,27 +59,34 @@ subprojects { subProject ->
     subProject.dependencies.testCompileOnly "org.jetbrains:annotations:${project.jetbrainsAnnotationsVersion}"
 
     subProject.ext.cleanMavenPublication = { mavenPublication ->
-        //Replace all deobf dependencies with normal jar references.
-        mavenPublication.pom.withXml { xmlProvider ->
-            def dependencies = asNode().dependencies
-            def allDeps = dependencies.'*';
-
-            // Remove forge, minecraft and ourselves as deps
-            allDeps.findAll() { el ->
-                (el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge') ||
-                (el.artifactId.text() == 'joined' && el.groupId.text() == 'net.minecraft') ||
-                (el.groupId.text() == 'com.communi-coresuggestu.saecularia-caudices')
-            }.forEach() { el ->
-                el.parent().remove(el)
+        subProject.afterEvaluate { evaluatedSubproject ->
+            if (evaluatedSubproject.getPlugins().hasPlugin('net.minecraftforge.gradle')) {
+                evaluatedSubproject.fg.component(mavenPublication)
             }
+            else
+            {
+                //Replace all deobf dependencies with normal jar references.
+                mavenPublication.pom.withXml { xmlProvider ->
+                    def dependencies = asNode().dependencies
+                    def allDeps = dependencies.'*';
 
-            //remove forgegradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-            allDeps.findAll() { el ->
-                el.version.text().contains('_mapped_')
-            }.each { el ->
-                def version = el.version
-                version.each {
-                    it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
+                    // Remove forge, minecraft and ourselves as deps
+                    allDeps.findAll() { el ->
+                        (el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge') ||
+                                (el.artifactId.text() == 'joined' && el.groupId.text() == 'net.minecraft')
+                    }.forEach() { el ->
+                        el.parent().remove(el)
+                    }
+
+                    //remove forgegradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
+                    allDeps.findAll() { el ->
+                        el.version.text().contains('_mapped_')
+                    }.each { el ->
+                        def version = el.version
+                        version.each {
+                            it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
+                        }
+                    }
                 }
             }
         }
@@ -99,11 +116,11 @@ subprojects { subProject ->
         subProject.tasks.processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
-
-
     subProject.publishing {
         publications {
             mavenJava(MavenPublication) { pub ->
+                artifactId "${rootProject.name}-${subProject.name}"
+
                 from subProject.components.java
 
                 pom {
@@ -131,5 +148,36 @@ subprojects { subProject ->
                 subProject.cleanMavenPublication(pub)
             }
         }
+    }
+}
+
+task("createChangelog") {
+    group = 'upload'
+
+    doLast {
+        def teamCityURL = "https://buildsystem.ldtteam.com/"
+        project.rootProject.file("build/changelog.md").parentFile.mkdirs()
+        def file = new FileOutputStream(project.rootProject.file("build/changelog.md"))
+        def out = new BufferedOutputStream(file)
+        def changesXML = new XmlSlurper().parse(teamCityURL + "guestAuth/app/rest/changes?locator=build:(id:" + teamcity["teamcity.build.id"] + ")")
+
+        def changes = changesXML.change
+        out << "# Saecularia-Caudices Changelog \n"
+        out << "## Version: _" + version + "_ \n"
+
+        out << "### Changes: \n"
+        if (changes.size() > 0) {
+            for (int i = 0; i < changes.size(); i++) {
+                def changeDetailsURL = teamCityURL + "guestAuth/app/rest/changes/id:" + changes[i].@id.text()
+                def changeDetailsXml = new XmlSlurper().parse(changeDetailsURL)
+                def changeComment = changeDetailsXml.comment.text().trim()
+
+                out << "* " + changeComment + "\n"
+            }
+        } else {
+            out << "_No Changes detected!_"
+        }
+
+        out.close()
     }
 }

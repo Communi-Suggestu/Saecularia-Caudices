@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.communi.suggesta.saecularia.caudices.fabric.mixin",
+  "package": "com.communi.suggestu.saecularia.caudices.fabric.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "platform.world.entity.EntityWorldlyBlockMixin",
