@@ -19,7 +19,10 @@
   "entrypoints": {
     "main": [
       "com.communi.suggestu.saecularia.caudices.fabric.Fabric"
-    ]
+    ],
+    "client": [
+      "com.communi.suggestu.saecularia.caudices.fabric.client.FabricClient"
+    ]",
   },
   "mixins": [
     "saeculariacaudices.mixins.json"
