@@ -13,6 +13,7 @@
     "platform.world.entity.vehicle.BoatWorldlyBlockMixin",
     "platform.world.item.BlockItemWorldlyBlockMixin",
     "platform.world.level.BlockBehaviourWorldlyBlockMixin",
+    "platform.world.level.BlockGetterWorldlyBlockMixin",
     "platform.world.level.ExplosionDamageCalculatorWorldlyBlockMixin",
     "platform.world.level.LevelWorldlyBlockMixin",
     "platform.world.level.block.WorldlyBlockGrassGrowMixin",
