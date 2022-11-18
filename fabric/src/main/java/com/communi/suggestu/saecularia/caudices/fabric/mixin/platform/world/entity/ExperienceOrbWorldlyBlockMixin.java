@@ -1,7 +1,6 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -35,7 +34,7 @@ public abstract class ExperienceOrbWorldlyBlockMixin extends Entity
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getFriction(
-                    blockState, Minecraft.getInstance().level, pPos, this
+                    blockState, this.level, pPos, this
             ) * 0.98f;
         }
         return current;

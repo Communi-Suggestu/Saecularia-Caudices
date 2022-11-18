@@ -1,7 +1,6 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.FlyingMob;
@@ -41,7 +40,7 @@ public abstract class FlyingMobWorldlyBlockMixin extends Mob
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getFriction(
-                    blockState, Minecraft.getInstance().level, pPos, this
+                    blockState, this.level, pPos, this
             ) * 0.91f;
         }
         return current;

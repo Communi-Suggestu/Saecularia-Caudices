@@ -1,7 +1,6 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity.animal.horse;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -35,7 +34,7 @@ public abstract class AbstractHorseWorldlyBlockMixin extends Entity
         if (pBlock.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getSoundType(
-                    pBlock, Minecraft.getInstance().level, pPos, Minecraft.getInstance().player
+                    pBlock, this.level, pPos, this
             );
         }
         return current;
