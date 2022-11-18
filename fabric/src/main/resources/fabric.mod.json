@@ -22,7 +22,7 @@
     ],
     "client": [
       "com.communi.suggestu.saecularia.caudices.fabric.client.FabricClient"
-    ]",
+    ]
   },
   "mixins": [
     "saeculariacaudices.mixins.json"
