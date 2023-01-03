@@ -18,6 +18,7 @@
     "platform.world.level.LevelWorldlyBlockMixin",
     "platform.world.level.block.WorldlyBlockGrassGrowMixin",
     "platform.world.level.block.entity.BeaconBlockEntityWorldlyBlockMixin",
+    "platform.world.level.block.entity.IBeaconBlockEntityAccessor",
     "platform.world.level.chunk.LevelChunkWorldlyBlockMixin",
     "platform.world.level.chunk.ProtoChunkWorldlyBlockMixin",
     "platform.world.level.chunk.storage.ChunkSerializerWorldlyBlockMixin"
