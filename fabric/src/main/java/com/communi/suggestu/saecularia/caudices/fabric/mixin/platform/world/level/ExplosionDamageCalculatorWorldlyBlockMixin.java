@@ -22,7 +22,8 @@ public abstract class ExplosionDamageCalculatorWorldlyBlockMixin
       method = "getBlockExplosionResistance",
       at = @At(
         value = "HEAD"
-      )
+      ),
+      cancellable = true
     )
     public void handleExplosionResistanceOnWorldlyBlocks(final Explosion explosion, final BlockGetter reader, final BlockPos pos, final BlockState state, final FluidState fluid, final CallbackInfoReturnable<Optional<Float>> cir)
     {
