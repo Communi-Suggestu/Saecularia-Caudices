@@ -34,13 +34,16 @@ public abstract class FlyingMobWorldlyBlockMixin extends Mob
 
     private float handleInjectionPoint(final float current)
     {
+        if (!(this instanceof EntityAccessor entityAccessor))
+            return current;
+
         final BlockPos pPos = new BlockPos(this.getBlockX(), this.getBlockY(), this.getBlockZ()).below();
-        final BlockState blockState = this.level.getBlockState(pPos);
+        final BlockState blockState = entityAccessor.getLevel().getBlockState(pPos);
 
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getFriction(
-                    blockState, this.level, pPos, this
+                    blockState, entityAccessor.getLevel(), pPos, this
             ) * 0.91f;
         }
         return current;

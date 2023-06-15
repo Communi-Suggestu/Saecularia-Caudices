@@ -4,6 +4,7 @@
   "package": "com.communi.suggestu.saecularia.caudices.fabric.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "platform.world.entity.EntityAccessor",
     "platform.world.entity.EntityWorldlyBlockMixin",
     "platform.world.entity.ExperienceOrbWorldlyBlockMixin",
     "platform.world.entity.FlyingMobWorldlyBlockMixin",
@@ -16,12 +17,15 @@
     "platform.world.level.BlockGetterWorldlyBlockMixin",
     "platform.world.level.ExplosionDamageCalculatorWorldlyBlockMixin",
     "platform.world.level.LevelWorldlyBlockMixin",
+    "platform.world.level.SignalGetterMixin",
     "platform.world.level.block.WorldlyBlockGrassGrowMixin",
     "platform.world.level.block.entity.BeaconBlockEntityWorldlyBlockMixin",
     "platform.world.level.block.entity.IBeaconBlockEntityAccessor",
-    "platform.world.level.chunk.LevelChunkWorldlyBlockMixin",
-    "platform.world.level.chunk.ProtoChunkWorldlyBlockMixin",
-    "platform.world.level.chunk.storage.ChunkSerializerWorldlyBlockMixin"
+    "platform.world.level.block.state.BlockBehaviourPropertiesMixin",
+    "platform.world.level.lighting.BlockLightEngineMixin",
+    "platform.world.level.lighting.LayerLightSectionStorageAccessor",
+    "platform.world.level.lighting.LightEngineAccessor",
+    "platform.world.level.lighting.LightEngineMixin"
   ],
   "client": [
     "platform.client.multiplayer.MultiPlayerGameModeWorldlyBlockMixin",

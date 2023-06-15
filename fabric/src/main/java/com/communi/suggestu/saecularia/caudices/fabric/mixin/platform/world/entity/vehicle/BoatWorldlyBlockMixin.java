@@ -1,6 +1,7 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity.vehicle;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
+import com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity.EntityAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -67,8 +68,11 @@ public abstract class BoatWorldlyBlockMixin extends Entity
     )
     private float injectGetFrictionAdaptorForState(final float current)
     {
+        if (!(this instanceof EntityAccessor entityAccessor))
+            return current;
+
         if (this.workingState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
-            return blockWithWorldlyProperties.getFriction(this.workingState, this.level, this.workingPos, this);
+            return blockWithWorldlyProperties.getFriction(this.workingState, entityAccessor.getLevel(), this.workingPos, this);
         }
 
         return current;

@@ -6,10 +6,20 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.*;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.SignalGetter;
+import net.minecraft.world.level.block.BeaconBeamBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.lighting.LayerLightEngine;
+import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
@@ -79,12 +89,12 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
      * Indicates if the blockstate is capable of processing weak redstone power.
      *
      * @param state The blockstate in question.
-     * @param levelReader The level reader to pull contextual information from.
+     * @param signalGetter The level reader to pull contextual information from.
      * @param pos The position in question.
      * @param side The side to check weak redstone power from.
      * @return True when the check should be performed, false when not.
      */
-    boolean shouldCheckWeakPower(BlockState state, LevelReader levelReader, BlockPos pos, Direction side);
+    boolean shouldCheckWeakPower(BlockState state, SignalGetter signalGetter, BlockPos pos, Direction side);
 
     /**
      * Indicates if the fluid state should render an overlay side if it is touching the blockstate in question.
@@ -157,7 +167,7 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
         } else if (targetState.getFluidState().getAmount() == 8) {
             return false;
         } else {
-            int i = LayerLightEngine.getLightBlockInto(levelReader, grassState, grassBlockPos, targetState, targetPosition, Direction.UP, targetState.getLightBlock(levelReader, targetPosition));
+            int i = LightEngine.getLightBlockInto(levelReader, grassState, grassBlockPos, targetState, targetPosition, Direction.UP, targetState.getLightBlock(levelReader, targetPosition));
             return i < levelReader.getMaxLightLevel();
         }
     }

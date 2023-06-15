@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -24,29 +25,7 @@ public abstract class LevelWorldlyBlockMixin implements LevelAccessor, AutoClose
         return (Level) (Object) this;
     }
 
-    @Shadow public abstract int getDirectSignalTo(final BlockPos param0);
-
-    @Shadow public abstract BlockState getBlockState(final BlockPos pPos);
-
-    @Inject(
-      method = "getSignal",
-             at = @At("HEAD"),
-             cancellable = true
-    )
-    public void checkForWorldlySignalBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Integer> cir) {
-        final BlockState blockState = getInternalMixinTarget().getBlockState(blockPos);
-        if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
-            final boolean shouldCheck = blockWithWorldlyProperties.shouldCheckWeakPower(
-              blockState, getInternalMixinTarget(), blockPos, direction
-            );
-
-            final int signal = blockState.getSignal(this, blockPos, direction);
-
-            cir.setReturnValue(
-                shouldCheck ? Math.max(signal, this.getDirectSignalTo(blockPos)) : signal
-            );
-        }
-    }
+    @Shadow public abstract @NotNull BlockState getBlockState(final BlockPos pPos);
 
     @Inject(
       method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
@@ -83,7 +62,6 @@ public abstract class LevelWorldlyBlockMixin implements LevelAccessor, AutoClose
         if (newState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
             newLight = blockWithWorldlyProperties.getLightEmission(newState, getInternalMixinTarget(), pos);
         }
-
 
         if ((flags & 128) == 0 && previousState != newState && (newOpacity != oldOpacity || newLight != oldLight || previousState.useShapeForLightOcclusion() || newState.useShapeForLightOcclusion())) {
             getInternalMixinTarget().getProfiler().push("queueCheckLight");

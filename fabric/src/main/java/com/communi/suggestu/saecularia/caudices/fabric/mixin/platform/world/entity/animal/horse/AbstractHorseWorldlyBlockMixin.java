@@ -1,6 +1,7 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity.animal.horse;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
+import com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity.EntityAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -9,12 +10,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(AbstractHorse.class)
 public abstract class AbstractHorseWorldlyBlockMixin extends Entity
 {
+
+    @Shadow private float eatAnim;
 
     public AbstractHorseWorldlyBlockMixin(final EntityType<?> entityType, final Level level)
     {
@@ -31,10 +36,13 @@ public abstract class AbstractHorseWorldlyBlockMixin extends Entity
     )
     private SoundType injectGetBlockStateSoundType(final SoundType current, BlockPos pPos, BlockState pBlock)
     {
+        if (!(this instanceof EntityAccessor entityAccessor))
+            return current;
+
         if (pBlock.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getSoundType(
-                    pBlock, this.level, pPos, this
+                    pBlock, entityAccessor.getLevel(), pPos, this
             );
         }
         return current;

@@ -7,9 +7,11 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,8 +21,6 @@ public abstract class EntityWorldlyBlockMixin
 {
 
     @Shadow public Level level;
-
-    @Shadow public abstract Level getLevel();
 
     @Shadow public abstract void playSound(final SoundEvent sound, final float volume, final float pitch);
 
@@ -38,7 +38,7 @@ public abstract class EntityWorldlyBlockMixin
     )
     public void redirectGetOffsetBlockStateSoundType(BlockPos pos, BlockState state, CallbackInfo ci)
     {
-        if (!state.getMaterial().isLiquid()) {
+        if (!state.liquid()) {
             BlockState blockState = this.level.getBlockState(pos.above());
             blockState = blockState.is(BlockTags.INSIDE_STEP_SOUND_BLOCKS) ? blockState : state;
 

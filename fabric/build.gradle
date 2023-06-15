@@ -13,7 +13,10 @@ project.dependencies.mappings loom.layered() { layer ->
 }
 
 project.tasks.processResources.filesMatching("fabric.mod.json") {
-    expand "version": project.version
+    expand ([
+            'version'                 : "${rootProject.version}",
+            'mcVersion'               : rootProject.minecraftVersion,
+    ])
 }
 
 project.loom {

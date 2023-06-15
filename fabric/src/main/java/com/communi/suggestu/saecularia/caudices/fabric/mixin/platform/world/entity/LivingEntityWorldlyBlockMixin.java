@@ -29,10 +29,13 @@ public abstract class LivingEntityWorldlyBlockMixin extends Entity
       at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"), ordinal = 0
     )
     private float rewriteFrictionValueForWorldlyBlocks(float original) { // shut, MCDev
+        if (!(this instanceof EntityAccessor entityAccessor))
+            return original;
+
         final BlockPos pos = this.getBlockPosBelowThatAffectsMyMovement();
-        final BlockState blockState = this.level.getBlockState(pos);
+        final BlockState blockState = entityAccessor.getLevel().getBlockState(pos);
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
-            return blockWithWorldlyProperties.getFriction(blockState, this.level, pos, this);
+            return blockWithWorldlyProperties.getFriction(blockState, entityAccessor.getLevel(), pos, this);
         }
 
         return original;
@@ -50,16 +53,19 @@ public abstract class LivingEntityWorldlyBlockMixin extends Entity
     )
     private SoundType injectGetBlockStateSoundType(final SoundType current)
     {
+        if (!(this instanceof EntityAccessor entityAccessor))
+            return current;
+
         int i = Mth.floor(this.getX());
         int j = Mth.floor(this.getY() - (double)0.2F);
         int k = Mth.floor(this.getZ());
         final BlockPos pos = new BlockPos(i, j, k);
-        BlockState blockState = this.level.getBlockState(pos);
+        BlockState blockState = entityAccessor.getLevel().getBlockState(pos);
 
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getSoundType(
-                    blockState, level, pos, this
+                    blockState, entityAccessor.getLevel(), pos, this
             );
         }
         return current;
