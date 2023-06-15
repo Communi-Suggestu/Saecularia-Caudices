@@ -116,6 +116,14 @@ subprojects { subProject ->
         subProject.tasks.processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
+    subProject.ext.getAllSupportedMcVersionsAsStringArray = {
+        if (subProject.additionalMinecraftVersions == "") {
+            return "${subProject.minecraftVersion}"
+        }
+
+        return "${subProject.minecraftVersion}\", \"${subProject.additionalMinecraftVersions.split(",").join("\", \"")}"
+    }
+
     subProject.publishing {
         publications {
             mavenJava(MavenPublication) { pub ->
