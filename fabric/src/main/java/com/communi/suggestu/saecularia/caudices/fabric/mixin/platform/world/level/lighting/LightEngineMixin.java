@@ -6,6 +6,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LightEngine;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -24,14 +25,16 @@ public class LightEngineMixin {
                 return;
             }
         }
-
-        final IBlockWithWorldlyProperties oldWithWorldlyProperties = (IBlockWithWorldlyProperties) oldState.getBlock();
-
-        if (!(newState.getBlock() instanceof final IBlockWithWorldlyProperties newWithWorldlyProperties)) {
-            cir.setReturnValue(newState.getLightBlock(blockGetter, blockPos) != oldState.getLightBlock(blockGetter, blockPos) || newState.getLightEmission() != oldWithWorldlyProperties.getLightEmission(oldState, blockGetter, blockPos) || newState.useShapeForLightOcclusion() || oldState.useShapeForLightOcclusion());
-            return;
+        
+        cir.setReturnValue(newState.getLightBlock(blockGetter, blockPos) != oldState.getLightBlock(blockGetter, blockPos) || getLightEmission(newState, blockGetter, blockPos) != getLightEmission(oldState, blockGetter, blockPos) || newState.useShapeForLightOcclusion() || oldState.useShapeForLightOcclusion());
+    }
+    
+    @Unique
+    private static int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
+        if (!(state.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)) {
+            return state.getLightEmission();
         }
-
-        cir.setReturnValue(newState.getLightBlock(blockGetter, blockPos) != oldState.getLightBlock(blockGetter, blockPos) || newWithWorldlyProperties.getLightEmission(newState, blockGetter, blockPos) != oldWithWorldlyProperties.getLightEmission(oldState, blockGetter, blockPos) || newState.useShapeForLightOcclusion() || oldState.useShapeForLightOcclusion());
+        
+        return blockWithWorldlyProperties.getLightEmission(state, world, pos);
     }
 }
