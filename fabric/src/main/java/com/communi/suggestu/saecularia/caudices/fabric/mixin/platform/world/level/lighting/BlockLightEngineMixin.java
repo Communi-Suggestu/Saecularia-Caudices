@@ -23,8 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockLightEngine.class)
 public abstract class BlockLightEngineMixin<M extends DataLayerStorageMap<M>, S extends LayerLightSectionStorage<M>> extends LightEngine<M, S> {
 
-    @Shadow @Final private BlockPos.MutableBlockPos mutablePos;
-
     @Unique
     private static ThreadLocal<BlockLightEngine> INSTANCE = new ThreadLocal<>();
 
@@ -33,7 +31,7 @@ public abstract class BlockLightEngineMixin<M extends DataLayerStorageMap<M>, S 
     }
 
     @Inject(method = "getEmission", at = @At("HEAD"), cancellable = true)
-    public void onGetEmission(long p_285243_, BlockState p_284973_, CallbackInfoReturnable<Integer> cir) {
+    public void onGetEmission(long p_285243_, BlockState state, CallbackInfoReturnable<Integer> cir) {
         if (!(this instanceof LightEngineAccessor<?,?> lightEngineAccessor)) {
             return;
         }
@@ -42,13 +40,12 @@ public abstract class BlockLightEngineMixin<M extends DataLayerStorageMap<M>, S 
             return;
         }
 
-        final BlockState state = lightEngineAccessor.getChunkSource().getLevel().getBlockState(mutablePos);
         final Block block = state.getBlock();
         if (!(block instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)) {
             return;
         }
 
-        final int lightEmission = blockWithWorldlyProperties.getLightEmission(state, lightEngineAccessor.getChunkSource().getLevel(), mutablePos);
+        final int lightEmission = blockWithWorldlyProperties.getLightEmission(state, lightEngineAccessor.getChunkSource().getLevel(), BlockPos.of(p_285243_));
         cir.setReturnValue(lightEmission > 0 && layerLightSectionStorageAccessor.callLightOnInSection(SectionPos.blockToSection(p_285243_)) ? lightEmission : 0);
     }
 
