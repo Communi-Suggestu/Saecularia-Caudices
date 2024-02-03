@@ -1,8 +1,8 @@
 plugins {
-    id ("net.neoforged.gradle.vanilla")
+    id 'net.neoforged.gradle.userdev'
 }
 
-project.dependencies.implementation "net.minecraft:client:${project.minecraftVersion}"
+project.addCoreProject()
 
 subsystems {
     parchment {
@@ -11,3 +11,4 @@ subsystems {
     }
 }
 
+project.dependencies.implementation "net.neoforged:neoforge:${project.forgeVersion}"

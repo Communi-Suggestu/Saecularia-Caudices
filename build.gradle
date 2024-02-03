@@ -1,3 +1,8 @@
+plugins {
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
+    id "net.neoforged.gradle.common"
+}
+
 project.group = "com.communi-suggestu.saecularia-caudices"
 project.version = (System.getenv().containsKey("Version") ? System.getenv("Version") : project.localVersion)
 
@@ -97,12 +102,6 @@ subprojects { subProject ->
         subProject.tasks.jar.enabled = false
         subProject.tasks.assemble.enabled = false
         subProject.tasks.test.enabled = false
-    }
-
-    subProject.ext.disableForgeGradleCompiling = {
-        subProject.afterEvaluate{ evaluatedProject ->
-            evaluatedProject.tasks.reobfJar.enabled = false
-        }
     }
 
     subProject.ext.addCoreProject = {
