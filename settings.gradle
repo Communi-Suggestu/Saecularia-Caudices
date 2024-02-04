@@ -10,9 +10,11 @@ pluginManagement.repositories.maven { url = 'https://maven.fabricmc.net/' }
 pluginManagement.repositories.gradlePluginPortal()
 pluginManagement.repositories.mavenCentral()
 
-pluginManagement.resolutionStrategy.setDefaultPluginVersion(DefaultPluginId.of("net.neoforged.gradle.common"), "7.0.86")
-pluginManagement.resolutionStrategy.setDefaultPluginVersion(DefaultPluginId.of("net.neoforged.gradle.userdev"), "7.0.86")
-pluginManagement.resolutionStrategy.setDefaultPluginVersion(DefaultPluginId.of("net.neoforged.gradle.vanilla"), "7.0.86")
+var neogradleVersion = "7.0.88"
+
+pluginManagement.resolutionStrategy.setDefaultPluginVersion(DefaultPluginId.of("net.neoforged.gradle.common"), neogradleVersion)
+pluginManagement.resolutionStrategy.setDefaultPluginVersion(DefaultPluginId.of("net.neoforged.gradle.userdev"), neogradleVersion)
+pluginManagement.resolutionStrategy.setDefaultPluginVersion(DefaultPluginId.of("net.neoforged.gradle.vanilla"), neogradleVersion)
 pluginManagement.resolutionStrategy.setDefaultPluginVersion(DefaultPluginId.of("fabric-loom"), "1.5-SNAPSHOT")
 
 rootProject.name = "saecularia-caudices"
