@@ -28,7 +28,6 @@ subprojects { subProject ->
 
     subProject.tasks.jar.archiveBaseName = "${rootProject.name}-${subProject.name}"
     subProject.tasks.jar.manifest.attributes([
-                    'Maven-Artifact'          : "${rootProject.group}:${rootProject.name}-${project.archivesBaseName}:${rootProject.version}",
                     "Specification-Title"     : rootProject.name,
                     "Specification-Vendor"    : rootProject.owner,
                     "Specification-Version"   : rootProject.version,
@@ -55,46 +54,8 @@ subprojects { subProject ->
         url 'file://' + rootProject.file('repo').getAbsolutePath()
     }
 
-    subProject.tasks.withType(GenerateModuleMetadata.class).all {
-        enabled = false
-    }
-
     subProject.dependencies.compileOnly "org.jetbrains:annotations:${project.jetbrainsAnnotationsVersion}"
     subProject.dependencies.testCompileOnly "org.jetbrains:annotations:${project.jetbrainsAnnotationsVersion}"
-
-    subProject.ext.cleanMavenPublication = { mavenPublication ->
-        subProject.afterEvaluate { evaluatedSubproject ->
-            if (evaluatedSubproject.getPlugins().hasPlugin('net.minecraftforge.gradle')) {
-                evaluatedSubproject.fg.component(mavenPublication)
-            }
-            else
-            {
-                //Replace all deobf dependencies with normal jar references.
-                mavenPublication.pom.withXml { xmlProvider ->
-                    def dependencies = asNode().dependencies
-                    def allDeps = dependencies.'*';
-
-                    // Remove forge, minecraft and ourselves as deps
-                    allDeps.findAll() { el ->
-                        (el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge') ||
-                                (el.artifactId.text() == 'joined' && el.groupId.text() == 'net.minecraft')
-                    }.forEach() { el ->
-                        el.parent().remove(el)
-                    }
-
-                    //remove forgegradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                    allDeps.findAll() { el ->
-                        el.version.text().contains('_mapped_')
-                    }.each { el ->
-                        def version = el.version
-                        version.each {
-                            it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     subProject.ext.disableCompiling = {
         subProject.tasks.build.enabled = false
@@ -104,14 +65,25 @@ subprojects { subProject ->
     }
 
     subProject.ext.addCoreProject = {
+
         subProject.dependencies.implementation (subProject.project(":core")) {
             exclude group: 'net.minecraft', module: 'joined'
         }
 
-        subProject.tasks.jar.from subProject.project(":core").sourceSets.main.output
-        subProject.tasks.processResources.from subProject.project(":core").sourceSets.main.resources
-        subProject.tasks.processResources.inputs.property "version", subProject.version
-        subProject.tasks.processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        if (subProject.getPlugins().hasPlugin("net.neoforged.gradle.userdev")) {
+            subProject.jarJar.enable()
+
+            subProject.dependencies.jarJar (subProject.project(":core")) {
+                jarJar.ranged(it, "[${subProject.version}]")
+                jarJar.pin(it, subProject.version)
+                exclude group: 'net.minecraft', module: 'joined'
+            }
+        }
+        else if (subProject.getPlugins().hasPlugin("fabric-loom")) {
+            subProject.dependencies.include (subProject.project(":core")) {
+                exclude group: 'net.minecraft', module: 'joined'
+            }
+        }
     }
 
     subProject.ext.getAllSupportedMcVersionsAsStringArray = {
@@ -120,6 +92,22 @@ subprojects { subProject ->
         }
 
         return "${subProject.minecraftVersion}\", \"${subProject.additionalMinecraftVersions.split(",").join("\", \"")}"
+    }
+
+    subProject.ext.getSupportedVersionRange = {
+        if (subProject.additionalMinecraftVersions == "") {
+            return "[${subProject.minecraftVersion}]"
+        }
+
+        return "[${subProject.additionalMinecraftVersions.split(",")[0]}, ${subProject.minecraftVersion}]"
+    }
+
+    subProject.ext.setupEmbeddedPublishing = { mavenPublication ->
+        subProject.afterEvaluate { evaluatedSubProject ->
+            if (evaluatedSubProject.getPlugins().hasPlugin("net.neoforged.gradle.userdev")) {
+                evaluatedSubProject.jarJar.component(mavenPublication)
+            }
+        }
     }
 
     subProject.publishing {
@@ -150,8 +138,6 @@ subprojects { subProject ->
                         url = subProject.projectUrl
                     }
                 }
-
-                subProject.cleanMavenPublication(pub)
             }
         }
     }

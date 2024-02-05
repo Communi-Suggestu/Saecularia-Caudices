@@ -12,3 +12,12 @@ subsystems {
 }
 
 project.dependencies.implementation "net.neoforged:neoforge:${project.forgeVersion}"
+
+project.tasks.processResources.outputs.upToDateWhen { false }
+project.tasks.processResources.filesMatching("META-INF/mods.toml") {
+    expand ([
+            'version'                 : "${rootProject.version}",
+            'mcVersion'               : "${project.getSupportedVersionRange()}",
+            'loaderVersion'           : "${project.forgeVersion}",
+    ])
+}

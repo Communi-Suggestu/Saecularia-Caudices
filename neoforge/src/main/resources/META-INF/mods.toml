@@ -1,0 +1,25 @@
+modLoader="lowcodefml"
+loaderVersion="[1,)"
+license="GLGPLv3"
+
+[[mods]] #mandatory
+modId="saeculariacaudices"
+version="${version}"
+displayName="Saecularia Caudices"
+authors="OrionOnline"
+logoFile="logo-forge.png"
+description='''
+Library mod that makes blocks properties world aware
+'''
+[[dependencies.saeculariacaudices]]
+modId="minecraft"
+required=true
+versionRange="${mcVersion}"
+ordering="NONE"
+side="BOTH"
+[[dependencies.saeculariacaudices]]
+modId="neoforge"
+required=true
+versionRange="[${loaderVersion},)"
+ordering="NONE"
+side="BOTH"
