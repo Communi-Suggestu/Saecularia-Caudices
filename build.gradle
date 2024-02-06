@@ -5,7 +5,7 @@ plugins {
 project.group = "com.communi-suggestu.saecularia-caudices"
 project.version = (System.getenv().containsKey("Version") ? System.getenv("Version") : project.localVersion)
 
-subprojects { subProject ->
+subprojects { Project subProject ->
     subProject.apply { configure ->
         configure.plugin("idea")
         configure.plugin("java")
@@ -108,6 +108,10 @@ subprojects { subProject ->
                 evaluatedSubProject.jarJar.component(mavenPublication)
             }
         }
+    }
+
+    subProject.tasks.withType(GenerateModuleMetadata.class).configureEach {
+        enabled = false
     }
 
     subProject.publishing {
