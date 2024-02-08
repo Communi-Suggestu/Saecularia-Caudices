@@ -29,11 +29,11 @@ subprojects { Project subProject ->
     subProject.tasks.jar.archiveBaseName = "${rootProject.name}-${subProject.name}"
     subProject.tasks.jar.manifest.attributes([
                     "Specification-Title"     : rootProject.name,
-                    "Specification-Vendor"    : rootProject.owner,
+                    "Specification-Vendor"    : rootProject.projectOwner,
                     "Specification-Version"   : rootProject.version,
-                    "Implementation-Title"    : rootProject.name,
-                    "Implementation-Version"  : rootProject.version,
-                    "Implementation-Vendor"   : rootProject.owner,
+                    "Implementation-Title"    : subProject.name,
+                    "Implementation-Version"  : subProject.version,
+                    "Implementation-Vendor"   : subProject.projectOwner,
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                     "Automatic-Module-Name"   : rootProject.name.toLowerCase().replace("-", "_"),
                     "FMLModType": "GAMELIBRARY"
@@ -62,6 +62,14 @@ subprojects { Project subProject ->
         subProject.tasks.jar.enabled = false
         subProject.tasks.assemble.enabled = false
         subProject.tasks.test.enabled = false
+    }
+
+    subProject.ext.setupEmbeddedPublishing = { mavenPublication ->
+        subProject.afterEvaluate { evaluatedSubProject ->
+            if (evaluatedSubProject.getPlugins().hasPlugin("net.neoforged.gradle.userdev")) {
+                evaluatedSubProject.jarJar.component(mavenPublication)
+            }
+        }
     }
 
     subProject.ext.addCoreProject = {
@@ -142,6 +150,8 @@ subprojects { Project subProject ->
                         url = subProject.projectUrl
                     }
                 }
+
+                subProject.setupEmbeddedPublishing(pub)
             }
         }
     }
