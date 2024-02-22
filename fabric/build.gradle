@@ -14,12 +14,14 @@ project.dependencies.mappings loom.layered() { layer ->
     layer.parchment("org.parchmentmc.data:parchment-${project.parchmentMinecraftVersion}:${project.parchmentVersion}@zip")
 }
 
+def interpolationProperties = [
+        'version'  : "${rootProject.version}",
+        'mcVersion': "${project.getAllSupportedMcVersionsAsStringArray()}",
+]
 project.tasks.processResources.filesMatching("fabric.mod.json") {
-    expand ([
-            'version'                 : "${rootProject.version}",
-            'mcVersion'               : "${project.getAllSupportedMcVersionsAsStringArray()}",
-    ])
+    expand(interpolationProperties)
 }
+project.tasks.processResources.inputs.properties(interpolationProperties)
 
 project.loom {
     runs {
