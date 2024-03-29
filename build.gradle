@@ -35,7 +35,7 @@ subprojects { Project subProject ->
                     "Implementation-Version"  : subProject.version,
                     "Implementation-Vendor"   : subProject.projectOwner,
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "Automatic-Module-Name"   : rootProject.name.toLowerCase().replace("-", "_"),
+                    "Automatic-Module-Name"   : rootProject.name.toLowerCase().replace("-", "_") + "_" + subProject.name.toLowerCase().replace("-", "_"),
                     "FMLModType": "GAMELIBRARY"
             ])
     subProject.tasks.jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
