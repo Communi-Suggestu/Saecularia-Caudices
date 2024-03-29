@@ -22,7 +22,6 @@ project.tasks.processResources.filesMatching("META-INF/mods.toml") {
     ])
 }
 
-tasks.jarJar.configuration project.configurations.includedLibraries
 tasks.jarJar.archiveClassifier.set("")
 tasks.jar.archiveClassifier.set("slim")
 tasks.assemble.dependsOn tasks.jarJar
