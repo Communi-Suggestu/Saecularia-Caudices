@@ -114,13 +114,35 @@ subprojects { Project subProject ->
 
 
             def remapCommonJarTask = subProject.tasks.register('remapCoreJar', subProject.ext.remapTaskClass) {
-                input = subProject.project(':core').tasks.jar.archiveFile
+                input = coreProject.tasks.jar.archiveFile
                 archiveClassifier = 'core-fabric'
                 from(fmjFile)
             }
 
             subProject.remapJar {
                 nestedJars.from(remapCommonJarTask.get().archiveFile)
+            }
+
+            def outgoingConfiguration = coreProject.configurations.create("remappedRuntimeElements")
+            outgoingConfiguration.canBeResolved = false
+            outgoingConfiguration.extendsFrom(coreProject.configurations.runtimeElements)
+
+            def remappedAttribute = Attribute.of("net.fabric.loom.remapped", Boolean)
+            outgoingConfiguration.attributes { attributes ->
+                attributes.attribute(remappedAttribute, true)
+            }
+
+            AdhocComponentWithVariants javaComponent = (AdhocComponentWithVariants) coreProject.components.findByName("java")
+            javaComponent.addVariantsFromConfiguration(outgoingConfiguration) {
+                // dependencies for this variant are considered runtime dependencies
+                it.mapToMavenScope("runtime")
+                // and also optional dependencies, because we don't want them to leak
+                it.mapToOptional()
+            }
+
+            coreProject.artifacts.add('remappedRuntimeElements', remapCommonJarTask.get().archiveFile) {
+                type = 'jar'
+                builtBy remapCommonJarTask.get()
             }
         }
     }
@@ -149,15 +171,9 @@ subprojects { Project subProject ->
         }
     }
 
-    subProject.tasks.withType(GenerateModuleMetadata.class).configureEach {
-        enabled = false
-    }
-
     subProject.publishing {
         publications {
             mavenJava(MavenPublication) { pub ->
-                artifactId "${rootProject.name}-${subProject.name}"
-
                 from subProject.components.java
 
                 pom {
