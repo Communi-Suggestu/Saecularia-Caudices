@@ -13,11 +13,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.SignalGetter;
-import net.minecraft.world.level.block.BeaconBeamBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SnowLayerBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.level.material.FluidState;
@@ -86,6 +82,17 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
     BlockState rotate(BlockState state, LevelAccessor levelAccessor, BlockPos pos, Rotation rotation);
 
     /**
+     * Used to mirror the given blockstate around.
+     *
+     * @param state The blockstate in question.
+     * @param levelAccessor The level accessor to pull contextual information from.
+     * @param pos The position in question.
+     * @param mirror The mirror to apply.
+     * @return The rotated blockstate.
+     */
+    BlockState mirror(BlockState state, LevelAccessor levelAccessor, BlockPos pos, Mirror mirror);
+
+    /**
      * Indicates if the blockstate is capable of processing weak redstone power.
      *
      * @param state The blockstate in question.
@@ -111,12 +118,13 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
      * Determines the color multiplier of a blockstate when the beacon beam passes through it.
      *
      * @param state The blockstate in question.
-     * @param levelReader The level reader to pull contextual information from.
+     * @param level The level reader to pull contextual information from.
      * @param pos The position in question.
      * @param beaconPos The position of the beacon block in question.
-     * @return A RGB Float array pointing to the color multiplier of the beacon beam color.
+     * @return A ARGB32 color multiplier.
      */
-    float[] getBeaconColorMultiplier(BlockState state, LevelReader levelReader, BlockPos pos, BlockPos beaconPos);
+    @Nullable
+    Integer getBeaconColorMultiplier(BlockState state, LevelReader level, BlockPos pos, BlockPos beaconPos);
 
     /**
      * Determines the sound type of the blockstate in question.

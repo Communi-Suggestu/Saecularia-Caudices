@@ -1,13 +1,23 @@
 plugins {
-    id ("net.neoforged.gradle.vanilla")
+    id 'com.ldtteam.tableau.maven-publishing' version '0.0.+'
 }
 
-project.dependencies.implementation "net.minecraft:client:${project.minecraftVersion}"
-
-subsystems {
-    parchment {
-        minecraftVersion = project.parchmentMinecraftVersion
-        mappingsVersion = project.parchmentVersion
+tableau {
+    project {
+        group = "com.communi-suggestu.saecularia-caudices"
+        publisher = "communi-suggestu"
+        versioning {
+            version = environmentVariable("VERSION")
+                    .orElse(property("local.version"))
+            suffix = ""
+        }
+    }
+    maven {
+        publishToLDTTeamMaven('communi-suggestu-saecularia-caudices')
+        publishLocally()
+        pom({
+            usingMitLicense()
+            usingGit()
+        })
     }
 }
-

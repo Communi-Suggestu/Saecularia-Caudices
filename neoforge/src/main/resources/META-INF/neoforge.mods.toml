@@ -1,5 +1,5 @@
 modLoader="lowcodefml"
-loaderVersion="[1,)"
+loaderVersion="[4,)"
 license="GLGPLv3"
 
 [[mods]] #mandatory
@@ -14,12 +14,14 @@ Library mod that makes blocks properties world aware
 [[dependencies.saeculariacaudices]]
 modId="minecraft"
 required=true
-versionRange="${mcVersion}"
+versionRange="${minecraft.version}"
 ordering="NONE"
 side="BOTH"
 [[dependencies.saeculariacaudices]]
 modId="neoforge"
 required=true
-versionRange="[${loaderVersion},)"
+versionRange="[${loader.version},)"
 ordering="NONE"
 side="BOTH"
+[[mixins]]
+config="sc.mixins.json"

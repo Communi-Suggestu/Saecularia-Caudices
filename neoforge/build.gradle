@@ -1,27 +1,29 @@
 plugins {
-    id 'net.neoforged.gradle.userdev'
+    id 'com.ldtteam.tableau.maven-publishing' version '0.0.+'
 }
 
-project.addCoreProject()
-
-subsystems {
-    parchment {
-        minecraftVersion = project.parchmentMinecraftVersion
-        mappingsVersion = project.parchmentVersion
+platform {
+    neoforge {
+        version = "21.1.+"
     }
 }
 
-project.dependencies.implementation "net.neoforged:neoforge:${project.forgeVersion}"
-
-project.tasks.processResources.outputs.upToDateWhen { false }
-project.tasks.processResources.filesMatching("META-INF/mods.toml") {
-    expand ([
-            'version'                 : "${rootProject.version}",
-            'mcVersion'               : "${project.getSupportedVersionRange()}",
-            'loaderVersion'           : "${project.forgeVersion}",
-    ])
+tableau {
+    project {
+        group = "com.communi-suggestu.saecularia-caudices"
+        publisher = "communi-suggestu"
+        versioning {
+            version = environmentVariable("VERSION")
+                    .orElse(property("local.version"))
+            suffix = ""
+        }
+    }
+    maven {
+        publishToLDTTeamMaven('communi-suggestu-saecularia-caudices')
+        publishLocally()
+        pom({
+            usingMitLicense()
+            usingGit()
+        })
+    }
 }
-
-tasks.jarJar.archiveClassifier.set("")
-tasks.jar.archiveClassifier.set("slim")
-tasks.assemble.dependsOn tasks.jarJar
