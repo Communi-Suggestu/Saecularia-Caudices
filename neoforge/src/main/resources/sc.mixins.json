@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.communi.suggestu.saecularia.caudices.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "scena.refmap.json",
+  "mixins": [
+    "StructureTemplateMixin"
+  ],
+  "client": [
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

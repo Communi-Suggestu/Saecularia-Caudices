@@ -4,6 +4,7 @@
   "package": "com.communi.suggestu.saecularia.caudices.fabric.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "platform.StructureTemplateMixin",
     "platform.world.entity.EntityAccessor",
     "platform.world.entity.EntityWorldlyBlockMixin",
     "platform.world.entity.ExperienceOrbWorldlyBlockMixin",
