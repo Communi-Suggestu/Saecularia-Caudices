@@ -30,9 +30,9 @@
 
   "depends": {
     "fabricloader": ">=$project.fabric.loader.version",
-    "fabric": "=>$project.fabric.api.version",
+    "fabric": ">=$project.fabric.api.version",
     "minecraft": ["${minecraft.version.get()}"],
-    "java": ">=17"
+    "java": ">=${java.version.get()}"
   },
   "suggests": {
   }
