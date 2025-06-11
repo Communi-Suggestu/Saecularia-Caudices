@@ -2,13 +2,17 @@ package com.communi.suggestu.saecularia.caudices.fabric.client;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 public class FabricClient implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("SaeculariaCaudices-Fabric-Client");
@@ -17,20 +21,23 @@ public class FabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         LOGGER.info("Initialized Saecularia-Caudices Client systems");
 
-        ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
-            if (result instanceof BlockHitResult blockHitResult
-                    && Minecraft.getInstance().level != null
-                    && Minecraft.getInstance().level.getBlockState(blockHitResult.getBlockPos()).getBlock() instanceof IBlockWithWorldlyProperties multiStateBlock) {
+        PlayerPickItemEvents.BLOCK.register((serverPlayer, blockPos, blockState, b) -> {
+            if (blockState.getBlock() instanceof IBlockWithWorldlyProperties multiStateBlock) {
+                final HitResult result = serverPlayer.pick(
+                        serverPlayer.blockInteractionRange(),
+                        0f,
+                        false
+                );
                 return multiStateBlock.getCloneItemStack(
-                        Minecraft.getInstance().level.getBlockState(blockHitResult.getBlockPos()),
+                        blockState,
                         result,
                         Minecraft.getInstance().level,
                         ((BlockHitResult) result).getBlockPos(),
-                        player
+                        serverPlayer
                 );
             }
 
-            return ItemStack.EMPTY;
+            return null;
         });
     }
 }

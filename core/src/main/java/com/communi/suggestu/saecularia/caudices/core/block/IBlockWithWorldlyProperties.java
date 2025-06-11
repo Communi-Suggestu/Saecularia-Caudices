@@ -38,16 +38,6 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
     float getFriction(BlockState state, LevelReader levelReader, BlockPos pos, @Nullable Entity entity);
 
     /**
-     * Determines the amount of light the given blockstate exudes.
-     *
-     * @param state The state in question.
-     * @param blockGetter The block getter to get contextual information from.
-     * @param pos The position the block is in.
-     * @return The light emission factor.
-     */
-    int getLightEmission(BlockState state, BlockGetter blockGetter, BlockPos pos);
-
-    /**
      * Determines if the blockstate is harvestable by a given player.
      *
      * @param state The blockstate in question.
@@ -175,8 +165,8 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
         } else if (targetState.getFluidState().getAmount() == 8) {
             return false;
         } else {
-            int i = LightEngine.getLightBlockInto(levelReader, grassState, grassBlockPos, targetState, targetPosition, Direction.UP, targetState.getLightBlock(levelReader, targetPosition));
-            return i < levelReader.getMaxLightLevel();
+            int i = LightEngine.getLightBlockInto(grassState, targetState, Direction.UP, targetState.getLightBlock());
+            return i < 15;
         }
     }
 }
