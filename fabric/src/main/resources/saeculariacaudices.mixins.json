@@ -15,23 +15,17 @@
     "platform.world.entity.vehicle.BoatWorldlyBlockMixin",
     "platform.world.item.BlockItemWorldlyBlockMixin",
     "platform.world.level.BlockBehaviourWorldlyBlockMixin",
-    "platform.world.level.BlockGetterWorldlyBlockMixin",
     "platform.world.level.ExplosionDamageCalculatorWorldlyBlockMixin",
-    "platform.world.level.LevelWorldlyBlockMixin",
     "platform.world.level.SignalGetterMixin",
     "platform.world.level.block.WorldlyBlockGrassGrowMixin",
     "platform.world.level.block.entity.BeaconBlockEntityWorldlyBlockMixin",
     "platform.world.level.block.entity.IBeaconBlockEntityAccessor",
-    "platform.world.level.block.state.BlockBehaviourPropertiesMixin",
-    "platform.world.level.lighting.BlockLightEngineMixin",
     "platform.world.level.lighting.LayerLightSectionStorageAccessor",
     "platform.world.level.lighting.LightEngineAccessor",
-    "platform.world.level.lighting.LightEngineMixin"
   ],
   "client": [
     "platform.client.multiplayer.MultiPlayerGameModeWorldlyBlockMixin",
     "platform.client.render.LevelRendererWorldlyBlockMixin",
-    "platform.client.render.block.ModelBlockRendererWorldlyBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

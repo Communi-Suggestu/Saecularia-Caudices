@@ -29,24 +29,6 @@ public abstract class LevelRendererWorldlyBlockMixin implements ResourceManagerR
     @Unique private int currentEventArgument;
     @Unique private BlockPos currentEventPosition;
 
-    @ModifyVariable(
-            method = "getLightColor(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)I",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/level/block/state/BlockState;getLightEmission()I"
-            ),
-            ordinal = 0
-    )
-    private static int injectGetBlockStateSoundType(final int current, BlockAndTintGetter pLevel, BlockState pState, BlockPos pPos)
-    {
-        final BlockState blockState = pLevel.getBlockState(pPos);
-        if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
-        {
-            return blockWithWorldlyProperties.getLightEmission(pState, pLevel, pPos);
-        }
-        return current;
-    }
-
     @Inject(
             method = "levelEvent",
             at = @At("HEAD")
