@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class EntityWorldlyBlockMixin
 {
 
-    @Shadow public Level level;
+    @Shadow private Level level;
 
     @Shadow public abstract void playSound(final SoundEvent sound, final float volume, final float pitch);
 
@@ -28,7 +28,6 @@ public abstract class EntityWorldlyBlockMixin
         return (Entity) (Object) this;
     }
 
-    @SuppressWarnings("InvalidInjectorMethodSignature")
     @Inject(
             method = "playStepSound",
             at = @At(

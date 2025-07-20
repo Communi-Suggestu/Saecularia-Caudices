@@ -8,7 +8,7 @@
     "platform.world.entity.EntityAccessor",
     "platform.world.entity.EntityWorldlyBlockMixin",
     "platform.world.entity.ExperienceOrbWorldlyBlockMixin",
-    "platform.world.entity.FlyingMobWorldlyBlockMixin",
+    "platform.world.entity.LeashableWorldlyBlockMixin",
     "platform.world.entity.LivingEntityWorldlyBlockMixin",
     "platform.world.entity.animal.horse.AbstractHorseWorldlyBlockMixin",
     "platform.world.entity.item.ItemEntityWorldlyBlockMixin",
@@ -21,11 +21,11 @@
     "platform.world.level.block.entity.BeaconBlockEntityWorldlyBlockMixin",
     "platform.world.level.block.entity.IBeaconBlockEntityAccessor",
     "platform.world.level.lighting.LayerLightSectionStorageAccessor",
-    "platform.world.level.lighting.LightEngineAccessor",
+    "platform.world.level.lighting.LightEngineAccessor"
   ],
   "client": [
     "platform.client.multiplayer.MultiPlayerGameModeWorldlyBlockMixin",
-    "platform.client.render.LevelRendererWorldlyBlockMixin",
+    "platform.client.render.LevelRendererWorldlyBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

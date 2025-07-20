@@ -24,7 +24,7 @@ public abstract class LivingEntityWorldlyBlockMixin extends Entity
     }
 
     @ModifyVariable(
-      method = "travel",
+      method = "travelInAir",
       slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBlockPosBelowThatAffectsMyMovement()Lnet/minecraft/core/BlockPos;")),
       at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"), ordinal = 0
     )
