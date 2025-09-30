@@ -3,10 +3,9 @@ package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.client.re
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LevelEventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LevelRenderer.class)
-public abstract class LevelRendererWorldlyBlockMixin implements ResourceManagerReloadListener, AutoCloseable
+@Mixin(LevelEventHandler.class)
+public abstract class LevelEventHandlerWorldlyBlockMixin implements ResourceManagerReloadListener, AutoCloseable
 {
 
     @Shadow private ClientLevel level;
@@ -53,7 +52,7 @@ public abstract class LevelRendererWorldlyBlockMixin implements ResourceManagerR
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getSoundType(
-              blockState, this.level, currentEventPosition, Minecraft.getInstance().cameraEntity
+              blockState, this.level, currentEventPosition, Minecraft.getInstance().getCameraEntity()
             );
         }
         return current;

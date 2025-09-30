@@ -25,7 +25,7 @@
   ],
   "client": [
     "platform.client.multiplayer.MultiPlayerGameModeWorldlyBlockMixin",
-    "platform.client.render.LevelRendererWorldlyBlockMixin"
+    "platform.client.render.LevelEventHandlerWorldlyBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
