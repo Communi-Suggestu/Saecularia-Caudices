@@ -1,20 +1,22 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.entity;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Slice;
 
-@SuppressWarnings("InvalidInjectorMethodSignature")
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityWorldlyBlockMixin extends Entity
 {
@@ -23,14 +25,16 @@ public abstract class LivingEntityWorldlyBlockMixin extends Entity
         super(entityType, level);
     }
 
-    @ModifyVariable(
-      method = "travelInAir",
-      slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBlockPosBelowThatAffectsMyMovement()Lnet/minecraft/core/BlockPos;")),
-      at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"), ordinal = 0
+    @WrapOperation(
+        method = "travelInAir",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/block/Block;getFriction()F"
+        )
     )
-    private float rewriteFrictionValueForWorldlyBlocks(float original) { // shut, MCDev
+    private float rewriteFrictionValueForWorldlyBlocks(final Block instance, final Operation<Float> original, @Local BlockPos blockPos) {
         if (!(this instanceof EntityAccessor entityAccessor))
-            return original;
+            return original.call(instance);
 
         final BlockPos pos = this.getBlockPosBelowThatAffectsMyMovement();
         final BlockState blockState = entityAccessor.getLevel().getBlockState(pos);
@@ -38,23 +42,19 @@ public abstract class LivingEntityWorldlyBlockMixin extends Entity
             return blockWithWorldlyProperties.getFriction(blockState, entityAccessor.getLevel(), pos, this);
         }
 
-        return original;
+        return original.call(instance);
     }
 
-
-    @SuppressWarnings("InvalidInjectorMethodSignature")
-    @ModifyVariable(
-            method = "playBlockFallSound",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"
-            ),
-            ordinal = 0
+    @WrapOperation(
+        method = "playBlockFallSound",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"
+        )
     )
-    private SoundType injectGetBlockStateSoundType(final SoundType current)
-    {
+    private SoundType rewriteSoundTypeForWorldlyBlocks(final BlockState instance, final Operation<SoundType> original) {
         if (!(this instanceof EntityAccessor entityAccessor))
-            return current;
+            return original.call(instance);
 
         int i = Mth.floor(this.getX());
         int j = Mth.floor(this.getY() - (double)0.2F);
@@ -65,9 +65,9 @@ public abstract class LivingEntityWorldlyBlockMixin extends Entity
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getSoundType(
-                    blockState, entityAccessor.getLevel(), pos, this
+                blockState, entityAccessor.getLevel(), pos, this
             );
         }
-        return current;
+        return original.call(instance);
     }
 }
