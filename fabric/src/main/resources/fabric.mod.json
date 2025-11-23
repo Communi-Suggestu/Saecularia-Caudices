@@ -29,8 +29,8 @@
   ],
 
   "depends": {
-    "fabricloader": ">=$project.fabric.loader.version",
-    "fabric": ">=$project.fabric.api.version",
+    "fabricloader": "${dependencies.net.fabricmc.fabric.loader.npm}",
+    "fabric": ">${dependencies.fabric.api.npm.get()}",
     "minecraft": ["${minecraft.version.get()}"],
     "java": ">=${java.version.get()}"
   },
