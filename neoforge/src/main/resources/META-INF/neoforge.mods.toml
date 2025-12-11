@@ -20,7 +20,7 @@ side="BOTH"
 [[dependencies.saeculariacaudices]]
 modId="neoforge"
 required=true
-versionRange="[${loader.version.get()},)"
+versionRange="${loader.version.get()}"
 ordering="NONE"
 side="BOTH"
 [[mixins]]
