@@ -14,13 +14,13 @@ Library mod that makes blocks properties world aware
 [[dependencies.saeculariacaudices]]
 modId="minecraft"
 required=true
-versionRange="${minecraft.version.get()}"
+versionRange="${minecraft.range.neoforge.get()}"
 ordering="NONE"
 side="BOTH"
 [[dependencies.saeculariacaudices]]
 modId="neoforge"
 required=true
-versionRange="[${loader.version.get()},)"
+versionRange="$dependencies.net.neoforged.neoforge.maven"
 ordering="NONE"
 side="BOTH"
 [[mixins]]
