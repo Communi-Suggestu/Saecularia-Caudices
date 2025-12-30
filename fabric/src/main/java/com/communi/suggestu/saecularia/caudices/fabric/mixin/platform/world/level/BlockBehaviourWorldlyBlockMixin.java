@@ -15,23 +15,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BlockBehaviourWorldlyBlockMixin
 {
     @Inject(
-      method = "getDestroyProgress",
-      at = @At(
-        value = "HEAD"
-      )
-    )
+        method = "getDestroyProgress",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true)
     public void handleWorldlyBreakableCondition(final BlockState state, final Player player, final BlockGetter level, final BlockPos pos, final CallbackInfoReturnable<Float> cir)
     {
         if (state.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             float f = state.getDestroySpeed(level, pos);
-            if (f == -1.0F) {
+            if (f == -1.0F)
+            {
                 cir.setReturnValue(0.0F);
-            } else {
+            }
+            else
+            {
                 int i = blockWithWorldlyProperties.canHarvestBlock(
-                        state, level, pos, player
+                    state, level, pos, player
                 ) ? 30 : 100;
-                cir.setReturnValue(player.getDestroySpeed(state) / f / (float)i);
+                cir.setReturnValue(player.getDestroySpeed(state) / f / (float) i);
             }
         }
     }

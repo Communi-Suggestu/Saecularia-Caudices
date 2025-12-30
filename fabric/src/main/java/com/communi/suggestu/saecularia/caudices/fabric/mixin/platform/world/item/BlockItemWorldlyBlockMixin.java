@@ -1,6 +1,8 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.item;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -25,28 +27,24 @@ public abstract class BlockItemWorldlyBlockMixin extends Item
         super(properties);
     }
 
+    @Definition(id = "getBlockState", method = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;")
+    @Expression("? = ?.getBlockState(?)")
     @ModifyVariable(
-            method = "place",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"
-            ),
-            ordinal = 0
-    )
+        method = "place",
+        at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
+        name = "placementState")
     private BlockState injectGetSoundTypeAdaptorForInitialState(final BlockState current)
     {
         this.soundState = current;
         return current;
     }
 
+    @Definition(id = "updateBlockStateFromTag", method = "Lnet/minecraft/world/item/BlockItem;updateBlockStateFromTag(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/block/state/BlockState;")
+    @Expression("? = ?.updateBlockStateFromTag(?, ?, ?, ?)")
     @ModifyVariable(
-            method = "place",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/item/BlockItem;updateBlockStateFromTag(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/block/state/BlockState;"
-            ),
-            ordinal = 0
-    )
+        method = "place",
+        at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
+        name = "placementState")
     private BlockState injectGetSoundTypeAdaptorForTagUpdate(final BlockState current)
     {
         this.soundState = current;
@@ -54,15 +52,12 @@ public abstract class BlockItemWorldlyBlockMixin extends Item
     }
 
 
-    @SuppressWarnings("InvalidInjectorMethodSignature")
+    @Definition(id = "getSoundType", method = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;")
+    @Expression("? = ?.getSoundType()")
     @ModifyVariable(
-            method = "place",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"
-            ),
-            ordinal = 0
-    )
+        method = "place",
+        at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
+        name = "soundType")
     private SoundType injectGetSoundTypeAdaptor(final SoundType current, BlockPlaceContext blockPlaceContext)
     {
         if (soundState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)

@@ -21,13 +21,12 @@ public abstract class ItemEntityWorldlyBlockMixin extends Entity
     }
 
     @ModifyVariable(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/level/block/Block;getFriction()F"
-            ),
-            ordinal = 0
-    )
+        method = "tick",
+        at = @At(
+            value = "INVOKE_ASSIGN",
+            target = "Lnet/minecraft/world/level/block/Block;getFriction()F"
+        ),
+        name = "friction")
     private float injectGetFrictionAdaptor(final float current)
     {
         if (!(this instanceof EntityAccessor entityAccessor))

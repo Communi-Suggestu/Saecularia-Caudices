@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityWorldlyBlockMixin extends Entity
@@ -32,7 +31,7 @@ public abstract class LivingEntityWorldlyBlockMixin extends Entity
             target = "Lnet/minecraft/world/level/block/Block;getFriction()F"
         )
     )
-    private float rewriteFrictionValueForWorldlyBlocks(final Block instance, final Operation<Float> original, @Local BlockPos blockPos) {
+    private float rewriteFrictionValueForWorldlyBlocks(final Block instance, final Operation<Float> original, @Local(name = "posBelow") BlockPos blockPos) {
         if (!(this instanceof EntityAccessor entityAccessor))
             return original.call(instance);
 

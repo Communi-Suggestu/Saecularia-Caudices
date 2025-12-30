@@ -1,6 +1,8 @@
 package com.communi.suggestu.saecularia.caudices.fabric.mixin.platform.world.level.block.entity;
 
 import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProperties;
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
@@ -15,7 +17,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@SuppressWarnings("InvalidInjectorMethodSignature")
+import java.util.Objects;
+
 @Mixin(BeaconBlockEntity.class)
 public abstract class BeaconBlockEntityWorldlyBlockMixin extends BlockEntity {
 
@@ -28,8 +31,6 @@ public abstract class BeaconBlockEntityWorldlyBlockMixin extends BlockEntity {
     public BeaconBlockEntityWorldlyBlockMixin(final BlockEntityType<?> blockEntityType, final BlockPos blockPos, final BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
-
-    @Shadow private int lastCheckY;
 
     @Inject(
             method = "tick",
@@ -53,12 +54,11 @@ public abstract class BeaconBlockEntityWorldlyBlockMixin extends BlockEntity {
         requestedBlockPos.set(new BlockPos(pos.getX(), ((IBeaconBlockEntityAccessor) blockEntity).getLastCheckY() + 1, pos.getZ()));
     }
 
+    @Definition(id = "above", method = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;")
+    @Expression("? = ?.above()")
     @ModifyVariable(
             method = "tick",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;"
-            ),
+            at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
             ordinal = 0,
             argsOnly = true)
     private static BlockPos injectAboveBlockPosSetterIntoTickForDiffuseColor(BlockPos current) {
@@ -66,20 +66,22 @@ public abstract class BeaconBlockEntityWorldlyBlockMixin extends BlockEntity {
         return current;
     }
 
+    @Definition(id = "getTextureDiffuseColor", method = "Lnet/minecraft/world/item/DyeColor;getTextureDiffuseColor()I")
+    @Expression("? = ?.getTextureDiffuseColor()")
     @ModifyVariable(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/item/DyeColor;getTextureDiffuseColor()I"
-            ),
-            ordinal = 0
-    )
+        method = "tick",
+        at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
+        name = "x")
     private static int redirectGetDyeColorGetTextureDiffuseColor(int current) {
-        final BlockState blockState = requestedBlockEntity.get().getLevel().getBlockState(requestedBlockPos.get());
+        final BlockState blockState = Objects.requireNonNull(requestedBlockEntity.get().getLevel()).getBlockState(requestedBlockPos.get());
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
-            return blockWithWorldlyProperties.getBeaconColorMultiplier(
+            final var multiplier = blockWithWorldlyProperties.getBeaconColorMultiplier(
                     blockState, requestedBlockEntity.get().getLevel(), requestedBlockPos.get(), requestedBlockEntity.get().getBlockPos()
             );
+
+            if (multiplier != null) {
+                return multiplier;
+            }
         }
 
         return current;

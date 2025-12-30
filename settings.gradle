@@ -14,20 +14,20 @@ pluginManagement {
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
-    id 'com.communi-suggestu.placitum' version '0.0.50'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+    id 'com.communi-suggestu.placitum' version '0.0.70'
 }
 
 rootProject.name = "saecularia-caudices"
 
 platforms {
     core(':core')
-    fabric(':fabric')
+    modernFabric(':fabric')
     neoforge(':neoforge')
 
     defaults {
         java {
-            version = 21
+            version = 25
         }
         project {
             modId = "saecularia-caudices"
