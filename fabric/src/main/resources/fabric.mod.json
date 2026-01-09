@@ -1,38 +1,31 @@
 {
   "schemaVersion": 1,
-  "id": "saeculariacaudices",
-  "version": "${version}",
-
-  "name": "Saecularia Caudices",
-  "description": "Library mod that makes blocks properties world aware.",
+  "id": "$project.mod.id",
+  "version": "$version",
+  "name": "$project.title",
+  "description": "$project.description",
   "authors": [
-    "OrionOnline"
+    "$project.author"
   ],
   "contact": {
     "sources": "https://github.com/Communi-Suggestu/Saecularia-Caudices"
   },
-
-  "license": "MIT",
+  "license": "$project.license",
   "icon": "logo.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
       "com.communi.suggestu.saecularia.caudices.fabric.Fabric"
-    ],
-    "client": [
-      "com.communi.suggestu.saecularia.caudices.fabric.client.FabricClient"
     ]
   },
   "mixins": [
     "saeculariacaudices.mixins.json"
   ],
-
   "depends": {
-    "fabricloader": ">=0.12.0",
-    "fabric": "*",
-    "minecraft": ["${minecraft.version}"],
-    "java": ">=17"
+    "fabricloader": ">=$project.fabric.loader.version",
+    "fabric": ">=$project.fabric.api.version",
+    "minecraft": [${minecraft.range.fabric.get()}],
+    "java": ">=${java.version.get()}"
   },
   "suggests": {
   }
