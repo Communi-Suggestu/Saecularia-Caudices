@@ -1,12 +1,12 @@
 package com.communi.suggestu.saecularia.caudices.core.block;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ItemLike;
@@ -165,7 +165,7 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
         } else if (targetState.getFluidState().getAmount() == 8) {
             return false;
         } else {
-            int i = LightEngine.getLightBlockInto(grassState, targetState, Direction.UP, targetState.getLightBlock());
+            int i = LightEngine.getLightBlockInto(grassState, targetState, Direction.UP, targetState.getLightDampening());
             return i < 15;
         }
     }
