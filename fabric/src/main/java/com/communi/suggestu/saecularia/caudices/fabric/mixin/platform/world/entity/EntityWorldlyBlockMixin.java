@@ -28,6 +28,7 @@ public abstract class EntityWorldlyBlockMixin
         return (Entity) (Object) this;
     }
 
+    @SuppressWarnings("deprecation")
     @Inject(
             method = "playStepSound",
             at = @At(
@@ -35,14 +36,14 @@ public abstract class EntityWorldlyBlockMixin
             ),
             cancellable = true
     )
-    public void redirectGetOffsetBlockStateSoundType(BlockPos pos, BlockState state, CallbackInfo ci)
+    public void redirectGetOffsetBlockStateSoundType(BlockPos pos, BlockState blockState, CallbackInfo ci)
     {
-        if (!state.liquid()) {
-            BlockState blockState = this.level.getBlockState(pos.above());
-            blockState = blockState.is(BlockTags.INSIDE_STEP_SOUND_BLOCKS) ? blockState : state;
+        if (!blockState.liquid()) {
+            BlockState blockStateAbove = this.level.getBlockState(pos.above());
+            blockStateAbove = blockStateAbove.is(BlockTags.INSIDE_STEP_SOUND_BLOCKS) ? blockStateAbove : blockState;
 
-            if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
-                SoundType soundType = blockWithWorldlyProperties.getSoundType(blockState, this.level, pos, this.getThis());
+            if (blockStateAbove.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
+                SoundType soundType = blockWithWorldlyProperties.getSoundType(blockStateAbove, this.level, pos, this.getThis());
                 this.playSound(soundType.getStepSound(), soundType.getVolume() * 0.15F, soundType.getPitch());
                 ci.cancel();
             }

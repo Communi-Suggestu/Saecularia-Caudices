@@ -24,18 +24,18 @@ public class StructureTemplateMixin {
                     shift = At.Shift.AFTER
             )
     )
-    public void placeInWorld$afterLoadWithComponents$inject$afterLoadWithComponents(ServerLevelAccessor serverLevel,
-                                                                                    BlockPos offset,
-                                                                                    BlockPos pos,
+    public void placeInWorld$afterLoadWithComponents$inject$afterLoadWithComponents(ServerLevelAccessor level,
+                                                                                    BlockPos position,
+                                                                                    BlockPos referencePos,
                                                                                     StructurePlaceSettings settings,
                                                                                     RandomSource random,
-                                                                                    int flags,
+                                                                                    int updateMode,
                                                                                     CallbackInfoReturnable<Boolean> cir,
-                                                                                    @Local(ordinal = 2) BlockPos blockPos,
-                                                                                    @Local BlockState blockState) {
+                                                                                    @Local(name = "blockPos") BlockPos blockPos,
+                                                                                    @Local(name = "state") BlockState blockState) {
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
-            blockWithWorldlyProperties.mirror(blockState, serverLevel, blockPos, settings.getMirror());
-            blockWithWorldlyProperties.rotate(blockState, serverLevel, blockPos, settings.getRotation());
+            blockWithWorldlyProperties.mirror(blockState, level, blockPos, settings.getMirror());
+            blockWithWorldlyProperties.rotate(blockState, level, blockPos, settings.getRotation());
         }
     }
 }

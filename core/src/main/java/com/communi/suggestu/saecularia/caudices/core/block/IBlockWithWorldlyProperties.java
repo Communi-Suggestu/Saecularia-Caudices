@@ -165,7 +165,7 @@ public interface IBlockWithWorldlyProperties extends ItemLike, BeaconBeamBlock
         } else if (targetState.getFluidState().getAmount() == 8) {
             return false;
         } else {
-            int i = LightEngine.getLightBlockInto(grassState, targetState, Direction.UP, targetState.getLightDampening());
+            int i = LightEngine.getLightDampeningInto(grassState, targetState, Direction.UP, targetState.getLightDampening());
             return i < 15;
         }
     }

@@ -48,10 +48,10 @@ public abstract class BoatWorldlyBlockMixin extends Entity
         method = "getGroundFriction",
         at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
         name = "blockState")
-    private BlockState injectGetFrictionAdaptorForState(final BlockState current)
+    private BlockState injectGetFrictionAdaptorForState(final BlockState blockState)
     {
-        this.workingState = current;
-        return current;
+        this.workingState = blockState;
+        return blockState;
     }
 
     @ModifyVariable(
@@ -61,15 +61,15 @@ public abstract class BoatWorldlyBlockMixin extends Entity
             target = "Lnet/minecraft/world/level/block/Block;getFriction()F"
         ),
         name = "friction")
-    private float injectGetFrictionAdaptorForState(final float current)
+    private float injectGetFrictionAdaptorForState(final float friction)
     {
         if (!(this instanceof EntityAccessor entityAccessor))
-            return current;
+            return friction;
 
         if (this.workingState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
             return blockWithWorldlyProperties.getFriction(this.workingState, entityAccessor.getLevel(), this.workingPos, this);
         }
 
-        return current;
+        return friction;
     }
 }

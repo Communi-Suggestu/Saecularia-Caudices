@@ -29,17 +29,17 @@ public abstract class AbstractHorseWorldlyBlockMixin extends Entity
         method = "playStepSound",
         at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
         name = "soundType")
-    private SoundType injectGetBlockStateSoundType(final SoundType current, BlockPos pPos, BlockState pBlock)
+    private SoundType injectGetBlockStateSoundType(final SoundType soundType, BlockPos pos, BlockState blockState)
     {
         if (!(this instanceof EntityAccessor entityAccessor))
-            return current;
+            return soundType;
 
-        if (pBlock.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
+        if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties)
         {
             return blockWithWorldlyProperties.getSoundType(
-                    pBlock, entityAccessor.getLevel(), pPos, this
+                    blockState, entityAccessor.getLevel(), pos, this
             );
         }
-        return current;
+        return soundType;
     }
 }
