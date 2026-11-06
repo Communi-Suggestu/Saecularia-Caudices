@@ -26,17 +26,17 @@ public interface SignalGetterMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    default void checkForWorldlySignalBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Integer> cir) {
-        final BlockState blockState = getInternalMixinTarget().getBlockState(blockPos);
+    default void checkForWorldlySignalBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Integer> cir) {
+        final BlockState blockState = getInternalMixinTarget().getBlockState(pos);
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
             final boolean shouldCheck = blockWithWorldlyProperties.shouldCheckWeakPower(
-                    blockState, getInternalMixinTarget(), blockPos, direction
+                    blockState, getInternalMixinTarget(), pos, direction
             );
 
-            final int signal = blockState.getSignal(getInternalMixinTarget(), blockPos, direction);
+            final int signal = blockState.getSignal(getInternalMixinTarget(), pos, direction);
 
             cir.setReturnValue(
-                    shouldCheck ? Math.max(signal, getInternalMixinTarget().getDirectSignalTo(blockPos)) : signal
+                    shouldCheck ? Math.max(signal, getInternalMixinTarget().getDirectSignalTo(pos)) : signal
             );
         }
     }

@@ -59,11 +59,10 @@ public abstract class BeaconBlockEntityWorldlyBlockMixin extends BlockEntity {
     @ModifyVariable(
             method = "tick",
             at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
-            ordinal = 0,
-            argsOnly = true)
-    private static BlockPos injectAboveBlockPosSetterIntoTickForDiffuseColor(BlockPos current) {
-        requestedBlockPos.set(current);
-        return current;
+            argsOnly = true, name = "pos")
+    private static BlockPos injectAboveBlockPosSetterIntoTickForDiffuseColor(BlockPos pos) {
+        requestedBlockPos.set(pos);
+        return pos;
     }
 
     @Definition(id = "getTextureDiffuseColor", method = "Lnet/minecraft/world/item/DyeColor;getTextureDiffuseColor()I")
@@ -72,7 +71,7 @@ public abstract class BeaconBlockEntityWorldlyBlockMixin extends BlockEntity {
         method = "tick",
         at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
         name = "x")
-    private static int redirectGetDyeColorGetTextureDiffuseColor(int current) {
+    private static int redirectGetDyeColorGetTextureDiffuseColor(int x) {
         final BlockState blockState = Objects.requireNonNull(requestedBlockEntity.get().getLevel()).getBlockState(requestedBlockPos.get());
         if (blockState.getBlock() instanceof IBlockWithWorldlyProperties blockWithWorldlyProperties) {
             final var multiplier = blockWithWorldlyProperties.getBeaconColorMultiplier(
@@ -84,6 +83,6 @@ public abstract class BeaconBlockEntityWorldlyBlockMixin extends BlockEntity {
             }
         }
 
-        return current;
+        return x;
     }
 }

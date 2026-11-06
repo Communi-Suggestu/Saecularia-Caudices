@@ -4,15 +4,10 @@ import com.communi.suggestu.saecularia.caudices.core.block.IBlockWithWorldlyProp
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 
 public class FabricClient implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("SaeculariaCaudices-Fabric-Client");
